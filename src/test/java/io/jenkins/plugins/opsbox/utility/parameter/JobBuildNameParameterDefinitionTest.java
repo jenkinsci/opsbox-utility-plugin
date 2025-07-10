@@ -60,7 +60,7 @@ public class JobBuildNameParameterDefinitionTest {
         assertEquals("BUILD_NAME", parameterDefinition.getName());
         assertEquals("source-job", parameterDefinition.getJobName());
         assertEquals("Select build name from source job", parameterDefinition.getDescription());
-        assertEquals(5, parameterDefinition.getCountLimit()); // 默认值
+        assertEquals(5, parameterDefinition.getMaxBuildCount()); // 默认值
     }
 
     @Test
@@ -75,20 +75,20 @@ public class JobBuildNameParameterDefinitionTest {
 
         assertEquals("BUILD_NAME", param.getName());
         assertEquals("source-job", param.getJobName());
-        assertEquals(10, param.getCountLimit());
+        assertEquals(10, param.getMaxBuildCount());
         assertEquals("Test description", param.getDescription());
     }
 
     @Test
-    public void testSetCountLimit() {
-        parameterDefinition.setCountLimit(10);
-        assertEquals(10, parameterDefinition.getCountLimit());
+    public void testSetMaxBuildCount() {
+        parameterDefinition.setMaxBuildCount(10);
+        assertEquals(10, parameterDefinition.getMaxBuildCount());
     }
 
     @Test
-    public void testGetCountLimitWithZero() {
-        parameterDefinition.setCountLimit(0);
-        assertEquals(5, parameterDefinition.getCountLimit()); // 应该返回默认值
+    public void testGetMaxBuildCountWithZero() {
+        parameterDefinition.setMaxBuildCount(0);
+        assertEquals(5, parameterDefinition.getMaxBuildCount()); // 应该返回默认值
     }
 
     @Test
@@ -201,7 +201,7 @@ public class JobBuildNameParameterDefinitionTest {
     }
 
     @Test
-    public void testCountLimitRespectsLimit() throws Exception {
+    public void testMaxBuildCountRespectsLimit() throws Exception {
         // 创建更多构建
         for (int i = 1; i <= 10; i++) {
             FreeStyleBuild build = jenkins.buildAndAssertSuccess(sourceJob);
@@ -209,7 +209,7 @@ public class JobBuildNameParameterDefinitionTest {
         }
 
         // 设置限制为3
-        parameterDefinition.setCountLimit(3);
+        parameterDefinition.setMaxBuildCount(3);
 
         List<String> choices = parameterDefinition.getChoices();
         assertNotNull(choices);

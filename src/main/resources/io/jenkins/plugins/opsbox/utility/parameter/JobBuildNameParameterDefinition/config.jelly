@@ -11,7 +11,7 @@
       <f:textbox />
     </f:entry>
 
-    <f:entry field="countLimit" title="${%parameter.count.limit}">
+    <f:entry field="maxBuildCount" title="${%parameter.max.build.count}">
         <f:number default="5"/>
     </f:entry>
 

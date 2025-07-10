@@ -45,7 +45,7 @@ public class PluginIntegrationTest {
         JobBuildNameParameterDefinition param1 = new JobBuildNameParameterDefinition(
             "SOURCE1_BUILD", "source-job-1", "Select build from source job 1"
         );
-        param1.setCountLimit(2);
+        param1.setMaxBuildCount(2);
 
         JobBuildNameParameterDefinition param2 = new JobBuildNameParameterDefinition(
             "SOURCE2_BUILD", "source-job-2", "Select build from source job 2"
@@ -129,7 +129,7 @@ public class PluginIntegrationTest {
 
         List<String> choices = param.getChoices();
         assertNotNull("Choices should not be null", choices);
-        assertTrue("Should have at least one choice", choices.size() > 0);
+        assertTrue("Should have at least one choice", !choices.isEmpty());
         assertTrue("Should contain folder build", choices.contains("folder-build-1.0.0"));
     }
 
@@ -147,7 +147,7 @@ public class PluginIntegrationTest {
         JobBuildNameParameterDefinition param = new JobBuildNameParameterDefinition(
             "PERF_BUILD", "performance-source", "Performance test parameter"
         );
-        param.setCountLimit(10);
+        param.setMaxBuildCount(10);
 
         // 测试获取选择的性能
         long startTime = System.currentTimeMillis();

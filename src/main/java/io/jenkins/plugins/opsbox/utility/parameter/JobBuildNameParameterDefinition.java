@@ -19,35 +19,37 @@ import java.util.List;
 public class JobBuildNameParameterDefinition extends SimpleParameterDefinition {
 
     private static final String DEFAULT_BUILD_NAME = "0.0.1-1+999";
-    private static final int DEFAULT_COUNT_LIMIT = 5;
+    private static final int DEFAULT_MAX_BUILD_COUNT = 5;
 
     @Getter
     private String jobName;
-    private int countLimit;
+    private int maxBuildCount;
 
     private final String defaultValue;
 
     @DataBoundConstructor
     public JobBuildNameParameterDefinition(String name, String jobName, String description) {
-        super(name, description);
+        super(name);
+        setDescription(description);
         this.jobName = jobName;
-        this.countLimit = DEFAULT_COUNT_LIMIT;
+        this.maxBuildCount = DEFAULT_MAX_BUILD_COUNT;
         this.defaultValue = DEFAULT_BUILD_NAME;
     }
 
-    public int getCountLimit() {
-        return countLimit == 0 ? DEFAULT_COUNT_LIMIT: countLimit;
+    public int getMaxBuildCount() {
+        return maxBuildCount == 0 ? DEFAULT_MAX_BUILD_COUNT: maxBuildCount;
     }
 
     @DataBoundSetter
-    public void setCountLimit(int countLimit) {
-        this.countLimit = countLimit;
+    public void setMaxBuildCount(int maxBuildCount) {
+        this.maxBuildCount = maxBuildCount;
     }
 
-    public JobBuildNameParameterDefinition(String name, String jobName, int countLimit, String defaultValue, String description) {
-        super(name, description);
+    public JobBuildNameParameterDefinition(String name, String jobName, int maxBuildCount, String defaultValue, String description) {
+        super(name);
+        setDescription(description);
         this.jobName = jobName;
-        this.countLimit = countLimit;
+        this.maxBuildCount = maxBuildCount;
         this.defaultValue = defaultValue;
     }
 
@@ -68,7 +70,7 @@ public class JobBuildNameParameterDefinition extends SimpleParameterDefinition {
         return item;
     }
 
-    private static List<String> getBuildNames(String jobName, int countLimit) {
+    private static List<String> getBuildNames(String jobName, int maxBuildCount) {
         Job job = find(jobName, Job.class);
         if (job == null) {
             return new ArrayList<>();
@@ -78,7 +80,7 @@ public class JobBuildNameParameterDefinition extends SimpleParameterDefinition {
         RunList<Run> runList = job.getBuilds().newBuilds();
 
         for (Run run: runList) {
-            if (buildNames.size() >= countLimit) {
+            if (buildNames.size() >= maxBuildCount) {
                 break;
             }
 
@@ -98,7 +100,7 @@ public class JobBuildNameParameterDefinition extends SimpleParameterDefinition {
 
     @Exported
     public List<String> getChoices() {
-        List<String> choices = getBuildNames(this.jobName, this.countLimit);
+        List<String> choices = getBuildNames(this.jobName, this.maxBuildCount);
         if (choices.isEmpty()) {
             choices.add(DEFAULT_BUILD_NAME);
         }
@@ -113,7 +115,7 @@ public class JobBuildNameParameterDefinition extends SimpleParameterDefinition {
     }
 
     @Override
-    public ParameterValue createValue(StaplerRequest req, JSONObject jo) {
+    public ParameterValue createValue(StaplerRequest2 req, JSONObject jo) {
         StringParameterValue value = req.bindJSON(StringParameterValue.class, jo);
         value.setDescription(getDescription());
         return value;
