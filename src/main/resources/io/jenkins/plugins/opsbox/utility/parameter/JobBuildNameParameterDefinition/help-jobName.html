@@ -1,0 +1,25 @@
+<div>
+    <p>Enter the name of the Jenkins job from which you want to select build names.</p>
+    
+    <h4>Examples:</h4>
+    <ul>
+        <li><strong>Simple job:</strong> <code>my-job</code></li>
+        <li><strong>Job in folder:</strong> <code>folder1/folder2/my-job</code></li>
+    </ul>
+    
+    <h4>Important Notes:</h4>
+    <ul>
+        <li>The job must exist and be accessible with your current permissions</li>
+        <li>Only successful builds will be available for selection</li>
+        <li>Builds that are currently running will be excluded</li>
+        <li>For jobs in folders, use the full path including folder names</li>
+        <li><strong>Runtime Permissions:</strong> At job runtime, the build typically runs as the SYSTEM user unless you use the <a href="https://plugins.jenkins.io/authorize-project/" target="_blank">Authorize Project plugin</a>. This means you might have access to a job during configuration but not at runtime. Ensure the SYSTEM user has the necessary permissions to access the specified job.</li>
+    </ul>
+    
+    <h4>Default Value Behavior:</h4>
+    <ul>
+        <li>If no successful builds are found for the specified job, a default value of <code>0.0.1-1+999</code> will be provided</li>
+        <li>This ensures that the parameter always has a valid value, even for new jobs without any builds</li>
+        <li>The default value will appear in the dropdown list when no actual builds are available</li>
+    </ul>
+</div>

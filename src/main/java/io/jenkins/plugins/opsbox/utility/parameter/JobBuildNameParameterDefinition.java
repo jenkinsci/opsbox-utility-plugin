@@ -11,16 +11,12 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.*;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.verb.POST;
-import org.acegisecurity.AccessDeniedException;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class JobBuildNameParameterDefinition extends SimpleParameterDefinition {
-
-    private static final Logger LOG = Logger.getLogger(JobBuildNameParameterDefinition.class.getName());
 
     private static final String DEFAULT_BUILD_NAME = "0.0.1-1+999";
     private static final int DEFAULT_COUNT_LIMIT = 5;
@@ -77,15 +73,7 @@ public class JobBuildNameParameterDefinition extends SimpleParameterDefinition {
         if (job == null) {
             return new ArrayList<>();
         }
-        
-        // Check permissions on the target job
-        try {
-            job.checkPermission(Item.READ);
-        } catch (AccessDeniedException e) {
-            LOG.warning("No permission to access job '" + jobName + "': " + e.getMessage());
-            return new ArrayList<>();
-        }
-        
+
         List<String> buildNames = new ArrayList<>();
         RunList<Run> runList = job.getBuilds().newBuilds();
 
@@ -148,20 +136,42 @@ public class JobBuildNameParameterDefinition extends SimpleParameterDefinition {
 
         @POST
         public FormValidation doCheckJobName(@QueryParameter String jobName, @AncestorInPath Item item) {
-            String errorMsg = "Job doesn't exist.";
+            String errorMsg = Messages.JobBuildNameParameterDefinition_jobNotExists();
 
             Job job = JobBuildNameParameterDefinition.find(jobName, Job.class);
             if (job == null) {
                 return FormValidation.error(errorMsg);
             }
-            
-            // Check permissions on the target job, not the current context
-            try {
-                job.checkPermission(Item.READ);
-                return FormValidation.ok();
-            } catch (AccessDeniedException e) {
-                return FormValidation.error("No permission to access job '" + jobName + "'");
+
+            return FormValidation.ok();
+        }
+
+        public AutoCompletionCandidates doAutoCompleteJobName(@QueryParameter String value) {
+            AutoCompletionCandidates candidates = new AutoCompletionCandidates();
+
+            Jenkins jenkins = Jenkins.getInstanceOrNull();
+            if (jenkins == null) {
+                return candidates;
             }
+
+            // 获取所有可用的作业
+            List<Job> allJobs = jenkins.getAllItems(Job.class);
+
+            for (Job job : allJobs) {
+                String jobFullName = job.getFullName();
+
+                // 如果用户输入了值，进行过滤匹配
+                if (value != null && !value.trim().isEmpty()) {
+                    if (jobFullName.toLowerCase().contains(value.toLowerCase())) {
+                        candidates.add(jobFullName);
+                    }
+                } else {
+                    // 如果没有输入值，添加所有作业
+                    candidates.add(jobFullName);
+                }
+            }
+
+            return candidates;
         }
     }
 }

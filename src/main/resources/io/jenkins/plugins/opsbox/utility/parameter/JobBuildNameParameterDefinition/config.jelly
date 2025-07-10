@@ -3,19 +3,19 @@
          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
          xmlns:i="jelly:fmt" xmlns:p="/lib/hudson/project">
 
-    <f:entry title="${%Name}" help="/help/parameter/name.html">
+    <f:entry title="${%parameter.name}" help="/help/parameter/name.html">
         <f:textbox name="parameter.name" value="${instance.name}" />
     </f:entry>
 
-    <f:entry title="${%Job Name}">
-        <f:textbox field="jobName" />
+    <f:entry field="jobName" title="${%parameter.job.name}">
+      <f:textbox />
     </f:entry>
 
-    <f:entry title="${%Count Limit}">
-        <f:number field="countLimit" default="5"/>
+    <f:entry field="countLimit" title="${%parameter.count.limit}">
+        <f:number default="5"/>
     </f:entry>
 
-    <f:entry title="${%Description}" help="/help/parameter/description.html">
+    <f:entry title="${%parameter.description}" help="/help/parameter/description.html">
         <f:textarea name="parameter.description" value="${instance.description}"
                     codemirror-mode="${app.markupFormatter.codeMirrorMode}"
                     codemirror-config="${app.markupFormatter.codeMirrorConfig}"
