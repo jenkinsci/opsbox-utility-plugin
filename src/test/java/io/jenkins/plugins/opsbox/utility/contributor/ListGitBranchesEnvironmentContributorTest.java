@@ -1,4 +1,4 @@
-package io.jenkinsci.plugins.opsbox.utility.contributor;
+package io.jenkins.plugins.opsbox.utility.contributor;
 
 import com.syhuang.hudson.plugins.listgitbranchesparameter.ListGitBranchesParameterDefinition;
 import com.syhuang.hudson.plugins.listgitbranchesparameter.ListGitBranchesParameterValue;

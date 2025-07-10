@@ -1,4 +1,4 @@
-package io.jenkinsci.plugins.opsbox.utility.parameter;
+package io.jenkins.plugins.opsbox.utility.parameter;
 
 import hudson.Launcher;
 import hudson.model.*;

@@ -1,8 +1,8 @@
-package io.jenkinsci.plugins.opsbox.utility.integration;
+package io.jenkins.plugins.opsbox.utility.integration;
 
 import hudson.model.*;
-import io.jenkinsci.plugins.opsbox.utility.contributor.ListGitBranchesEnvironmentContributor;
-import io.jenkinsci.plugins.opsbox.utility.parameter.JobBuildNameParameterDefinition;
+import io.jenkins.plugins.opsbox.utility.contributor.ListGitBranchesEnvironmentContributor;
+import io.jenkins.plugins.opsbox.utility.parameter.JobBuildNameParameterDefinition;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;

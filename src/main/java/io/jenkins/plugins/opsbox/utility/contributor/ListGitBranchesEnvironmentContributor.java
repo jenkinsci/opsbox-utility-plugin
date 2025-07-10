@@ -1,4 +1,4 @@
-package io.jenkinsci.plugins.opsbox.utility.contributor;
+package io.jenkins.plugins.opsbox.utility.contributor;
 
 import com.google.common.collect.Maps;
 import com.syhuang.hudson.plugins.listgitbranchesparameter.ListGitBranchesParameterDefinition;

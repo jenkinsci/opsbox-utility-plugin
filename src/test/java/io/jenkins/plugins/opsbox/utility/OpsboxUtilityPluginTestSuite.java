@@ -1,8 +1,8 @@
-package io.jenkinsci.plugins.opsbox.utility;
+package io.jenkins.plugins.opsbox.utility;
 
-import io.jenkinsci.plugins.opsbox.utility.contributor.ListGitBranchesEnvironmentContributorTest;
-import io.jenkinsci.plugins.opsbox.utility.integration.PluginIntegrationTest;
-import io.jenkinsci.plugins.opsbox.utility.parameter.JobBuildNameParameterDefinitionTest;
+import io.jenkins.plugins.opsbox.utility.contributor.ListGitBranchesEnvironmentContributorTest;
+import io.jenkins.plugins.opsbox.utility.integration.PluginIntegrationTest;
+import io.jenkins.plugins.opsbox.utility.parameter.JobBuildNameParameterDefinitionTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
