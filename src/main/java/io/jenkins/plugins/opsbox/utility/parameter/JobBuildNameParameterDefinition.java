@@ -54,16 +54,23 @@ public class JobBuildNameParameterDefinition extends SimpleParameterDefinition {
     }
 
     private static <T extends Item> T find(String jobName, Class<T> type) {
-        Jenkins jenkins = Jenkins.getInstance();
-        // direct search, can be used to find folder based items <folder>/<folder>/<jobName>
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins == null) {
+            return null;
+        }
+
         T item = jenkins.getItemByFullName(jobName, type);
-        if (item == null) {
-            // not found in a direct search, search in all items since the item might be in a folder but given without folder structure
-            // (to keep it backwards compatible)
+
+        // 添加权限检查
+        if (item != null) {
+          item.checkPermission(Item.READ);
+        } else {
+            // 在搜索所有项目时也要检查权限
             for (T allItem : jenkins.getAllItems(type)) {
                 if (allItem.getName().equals(jobName)) {
-                    item = allItem;
-                    break;
+                  allItem.checkPermission(Item.READ);
+                  item = allItem;
+                  break;
                 }
             }
         }
@@ -138,6 +145,7 @@ public class JobBuildNameParameterDefinition extends SimpleParameterDefinition {
 
         @POST
         public FormValidation doCheckJobName(@QueryParameter String jobName, @AncestorInPath Item item) {
+            item.checkPermission(Item.READ);
             String errorMsg = Messages.JobBuildNameParameterDefinition_jobNotExists();
 
             Job job = JobBuildNameParameterDefinition.find(jobName, Job.class);
