@@ -4,88 +4,51 @@
 [![Jenkins Plugin](https://img.shields.io/jenkins/plugin/v/opsbox-utility-plugin.svg)](https://plugins.jenkins.io/opsbox-utility-plugin/)
 [![Jenkins Version](https://img.shields.io/badge/Jenkins-2.414+-blue.svg)](https://jenkins.io/)
 
-A utility plugin providing various helper functions for Jenkins pipelines, including job build name parameter definition and Git branch environment variable enhancement.
+A Jenkins plugin providing two utility features:
+- **Job Build Name Parameter**: Select build names from other Jenkins jobs as parameters
+- **Git Branch Environment Variables**: Automatically add environment variables for Git branch parameters
 
-## Features
+## Quick Start
 
-### 🏗️ Job Build Name Parameter Definition
-- **Select build names from other jobs**: Allow users to select successful build names from other Jenkins jobs as parameters
-- **Configurable count limit**: Set the maximum number of build names to display
-- **Smart filtering**: Only shows successful builds, excluding failed or building jobs
-- **Folder support**: Supports jobs in folders with full path support
+### Installation
+1. Jenkins → Manage Jenkins → Plugin Manager
+2. Search for "Opsbox Utility Plugin" and install
+3. Restart Jenkins
 
-### 🌿 Git Branches Environment Variables
-- **Enhanced environment variables**: Automatically add Git repository information to environment variables
-- **Clean branch names**: Removes `refs/heads/` and `refs/tags/` prefixes from branch names
-- **Credentials support**: Handles Git credentials for private repositories
-- **Multi-parameter support**: Works with multiple Git branch parameters in the same job
+### Feature 1: Job Build Name Parameter
 
-## Installation
-
-### From Jenkins Plugin Manager
-1. Go to Jenkins → Manage Jenkins → Plugin Manager
-2. Search for "Opsbox Utility Plugin"
-3. Install and restart Jenkins
-
-### Manual Installation
-1. Download the `.hpi` file from the [releases page](https://github.com/jenkinsci/opsbox-utility-plugin/releases)
-2. Go to Jenkins → Manage Jenkins → Plugin Manager → Advanced
-3. Upload the `.hpi` file
-4. Restart Jenkins
-
-### Build from Source
-```bash
-git clone https://github.com/jenkinsci/opsbox-utility-plugin.git
-cd opsbox-utility-plugin
-mvn clean package
+Add parameter to job configuration:
+```groovy
+pipeline {
+    agent any
+    parameters {
+        jobBuildNameParam(
+            name: 'BUILD_NAME',
+            jobName: 'upstream-job',
+            countLimit: 5,
+            description: 'Select build name from upstream job'
+        )
+    }
+    stages {
+        stage('Deploy') {
+            steps {
+                echo "Deploying build: ${params.BUILD_NAME}"
+            }
+        }
+    }
+}
 ```
 
-## Usage
+**Configuration Options**:
+- `name`: Parameter name
+- `jobName`: Source job name (supports folder paths like `folder/job`)
+- `countLimit`: Maximum number of builds to show (default: 5)
+- `description`: Parameter description
 
-### Job Build Name Parameter
+### Feature 2: Git Branch Environment Variables
 
-1. **Add Parameter Definition**:
-   - In your job configuration, go to "This project is parameterized"
-   - Add "Job Build Name Parameter"
-   - Configure the source job name and count limit
+Works with [List Git Branches Parameter](https://plugins.jenkins.io/list-git-branches-parameter/) plugin:
 
-2. **Configuration Options**:
-   - **Name**: Parameter name (used in pipeline scripts)
-   - **Job Name**: Source job name (supports folder paths like `folder/job`)
-   - **Count Limit**: Maximum number of builds to show (default: 5)
-   - **Description**: Parameter description
-
-3. **Pipeline Usage**:
-   ```groovy
-   pipeline {
-       agent any
-       parameters {
-           jobBuildNameParam(
-               name: 'BUILD_NAME',
-               jobName: 'upstream-job',
-               description: 'Select build name from upstream job'
-           )
-       }
-       stages {
-           stage('Deploy') {
-               steps {
-                   echo "Deploying build: ${params.BUILD_NAME}"
-               }
-           }
-       }
-   }
-   ```
-
-### Git Branch Environment Variables
-
-This feature automatically activates when you use the [List Git Branches Parameter](https://plugins.jenkins.io/list-git-branches-parameter/) plugin.
-
-**Available Environment Variables**:
-- `PARAMS__{PARAM_NAME}__REMOTE_URL`: Git repository URL
-- `PARAMS__{PARAM_NAME}__CREDENTIALS_ID`: Git credentials ID
-- `{PARAM_NAME}`: Clean branch name (without refs/heads/ prefix)
-
-**Example**:
 ```groovy
 pipeline {
     agent any
@@ -108,77 +71,50 @@ pipeline {
 }
 ```
 
-
+**Auto-generated Environment Variables**:
+- `PARAMS__{PARAM_NAME}__REMOTE_URL`: Git repository URL
+- `PARAMS__{PARAM_NAME}__CREDENTIALS_ID`: Git credentials ID
+- `{PARAM_NAME}`: Clean branch name
 
 ## Requirements
 
-- **Jenkins**: 2.414 or higher
-- **Java**: 11 or higher
-- **Dependencies**: 
-  - List Git Branches Parameter Plugin (for Git features)
-  - Structs Plugin
+- Jenkins 2.414+
+- Java 11+
+- List Git Branches Parameter Plugin (for Git features)
 
 ## Development
 
-### Building the Plugin
 ```bash
-mvn clean compile
-```
+# Build
+mvn clean package
 
-### Running Tests
-```bash
+# Test
 mvn test
-```
 
-### Running in Development Mode
-```bash
+# Run in development mode
 mvn hpi:run
 ```
 
-### Creating Release
-```bash
-mvn release:prepare release:perform
-```
+## FAQ
 
-## Contributing
+**Q: How to handle jobs in folders?**
+A: Use full path, e.g., `folder1/folder2/job-name`
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+**Q: Can't see build name options?**
+A: Ensure source job exists and has successful build records
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+**Q: Environment variables not set?**
+A: Make sure List Git Branches Parameter plugin is installed and configured correctly
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/jenkinsci/opsbox-utility-plugin/issues)
-- **Documentation**: [Jenkins Plugin Documentation](https://plugins.jenkins.io/opsbox-utility-plugin/)
-- **Community**: [Jenkins Community](https://www.jenkins.io/chat/)
+- [GitHub Issues](https://github.com/jenkinsci/opsbox-utility-plugin/issues)
+- [Plugin Documentation](https://plugins.jenkins.io/opsbox-utility-plugin/)
 
-## FAQ
+## License
 
-### Q: How do I handle jobs in folders?
-A: Use the full path, for example `folder1/folder2/job-name`.
-
-### Q: Why can't I see build name options?
-A: Make sure the source job exists and has successful build records.
-
-
-
-### Q: What if environment variables are not set?
-A: Make sure the List Git Branches Parameter plugin is installed and the parameter configuration is correct.
-
-
-
-## Author
-
-**Seanly Liu** - [seanly.me@gmail.com](mailto:seanly.me@gmail.com)
-
-
+MIT License - see [LICENSE](LICENSE) file for details
 
 ---
 
-Made with ❤️ for the Jenkins community 
+Author: **Seanly Liu** - [seanly.me@gmail.com](mailto:seanly.me@gmail.com) 
